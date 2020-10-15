@@ -21,11 +21,13 @@ public class VendaDAO {
 		venda.setNomeProduto(pecaVendida.getNome());
 		venda.setQtdItensComprados(qtdComprada);
 		venda.setValorCompra(pecaVendida.getPrecoVenda()*qtdComprada);
+		
 		try {
 				
 		int estoqueAtualizado = pecaVendida.getQuantidadeEstoque() - qtdComprada;
 		pecaVendida.setQuantidadeEstoque(estoqueAtualizado);
 		pecaDB.atualizaEstoque(estoqueAtualizado, codigoBarras);
+		
 		} catch (SQLException e) {
 			System.err.println("Falha na Venda...");
 			System.err.println(e.getMessage());
