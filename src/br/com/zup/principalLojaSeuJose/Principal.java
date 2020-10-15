@@ -1,10 +1,15 @@
-package br.com.zup.pojo;
+package br.com.zup.principalLojaSeuJose;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 import br.com.zup.lojaSeuJoseDAO.PecasDAO;
+import br.com.zup.lojaSeuJoseDAO.VendaDAO;
+import br.com.zup.lojaSeuJoseEnums.Categoria;
+import br.com.zup.pojo.Peca;
+import br.com.zup.pojo.Venda;
 
 public class Principal {
 
@@ -29,6 +34,16 @@ public class Principal {
 					+ "0 - Voltar ao Menu Principal"
 			);
 	
+	public static final String MENUGERENCIAVENDAS=(
+			"===== Controle de Vendas =====\n\n" 
+					+ "Escolha uma opção\n" 
+					+ "1 - Realizar uma Venda\n"
+					+ "2 - Gerar relatório de vendas diárias\n"
+					+ "3 - \n"
+					+ "4 - \n"
+					+ "0 - Voltar ao Menu Principal"
+			);
+	
 	public static void cadastraPeca(Scanner teclado) throws SQLException {
 
 		System.out.println("Digite o codigo de barra do produto a ser cadastrado:");
@@ -45,9 +60,9 @@ public class Principal {
 		double precoVenda = teclado.nextDouble();
 		System.out.println("Quantas peças dessa você tem para o estoque?");
 		int estoque = teclado.nextInt();
-		System.out.println("Essa peça pertence a qual categoria?");
-		String categoria = teclado.next();
-
+		Categoria categoria = defineCategoria(teclado);
+		
+		
 		Peca pecaCadastrada = new Peca();
 		pecaCadastrada.setCodigoBarras(codBarra);
 		pecaCadastrada.setNome(nome);
@@ -64,6 +79,48 @@ public class Principal {
 		System.out.println("A peça " + nome + " foi inserida no banco de dados!\n");
 	}
 
+	public static Categoria defineCategoria(Scanner teclado) {
+		
+		int escolheCategoria;		
+		
+		do {
+			System.out.println("Escolha uma categoria:\n"
+					+ "1 - Motor\n"
+					+ "2 - Funilaria\n"
+					+ "3 - Performace\n"
+					+ "4 - Suspenção\n"
+					+ "5 - Acessórios\n");
+			escolheCategoria = teclado.nextInt();
+			
+			switch (escolheCategoria) {
+			case 1: {
+				return Categoria.MOTOR;
+			}
+			
+			case 2: {
+				return Categoria.FUNILARIA;
+			}
+			
+			case 3: {
+				return Categoria.PERFORMACE;
+			}
+			
+			case 4: {
+				return Categoria.SUSPENCAO;
+			}
+			
+			case 5: {
+				return Categoria.ACESSORIOS;
+			}
+			
+			default:
+				System.out.println("Opção Inválida");
+				return null;
+			}
+		} while(escolheCategoria != 0);
+		
+	}
+	
 	public static void listaPecasBancoDados() throws SQLException {
 		
 		PecasDAO pecasDB = new PecasDAO();
@@ -78,7 +135,7 @@ public class Principal {
 	public static void buscaPecaByCodigo(Scanner teclado) throws SQLException {
 		
 		System.out.println("Qual o código de barras do produto que\n"
-				+ " você quer encontrar?");
+				+ "você quer encontrar?");
 		int codigoProcurado = teclado.nextInt();
 		
 		PecasDAO pecaProcurada = new PecasDAO();
@@ -132,74 +189,136 @@ public class Principal {
 		pecaDB.removePeca(codigoBarras);
 		System.out.println("A peça referente ao código de barra "+codigoBarras+" foi removida do banco de dados.");
 	}
+		
+	public static void gerenciamentoEstoque(Scanner teclado) throws SQLException {
+		
+		int opcaoMenuEstoque = 0;
+		do {
+			System.out.println(MENUGERENCIAESTOQUE);
+			opcaoMenuEstoque = teclado.nextInt();
+			switch (opcaoMenuEstoque) {
+			
+			case 1: {
+
+				cadastraPeca(teclado);
+				break;
+			}
+			
+			case 2: {
+				
+				listaPecasBancoDados();
+				break;
+			}
+			
+			case 3: {
+										
+				buscaPecaByCodigo(teclado);
+				break;
+			}
+			
+			case 4: {
+				
+				buscaPecasByTrechoNome(teclado);
+				break;
+			}
+			
+			case 5: {
+				
+				buscaPecasCarroEspecifico(teclado);
+				break;
+			}
+			
+			case 6: {
+				
+				buscaPecasByCategoria(teclado);
+				break;
+			}
+			
+			case 7: {
+				
+				removerPecas(teclado);
+				break;
+			}
+			
+			case 0: {
+				return;
+			}
+			default:
+				System.out.println("Opção Inválida");
+			}
+		}while (opcaoMenuEstoque != 0);
+	}
+	
+	public static void gerenciamentoVendas(Scanner teclado) throws SQLException {
+		
+		int opcaoMenuVendas = 0;
+		List<Venda> relatorioDiario = new ArrayList<>();
+		VendaDAO realizarVenda = new VendaDAO();
+		double valorTotalVendas = 0;
+		do {
+			System.out.println(MENUGERENCIAVENDAS);
+			opcaoMenuVendas = teclado.nextInt();
+			
+			
+			switch (opcaoMenuVendas) {
+			case 1: {
+				
+				System.out.println("Digite o código de barras da peça: ");
+				int codigoBarras = teclado.nextInt();
+				System.out.println("Quantas unidades o cliente vai levar?");
+				int qtdComprada = teclado.nextInt();
+				
+				Venda venda = realizarVenda.realizarVenda(codigoBarras, qtdComprada);
+				valorTotalVendas += venda.getValorCompra();
+				relatorioDiario.add(venda);
+				
+				System.out.println("Venda executada com sucesso");
+				break;
+			}
+			
+			case 2: {
+			
+				for (Venda venda : relatorioDiario ) {
+				System.out.println(venda.gravaVenda());	
+				}
+				
+				System.out.println("\n\nFATURAMENTO DO DIA: R$"+valorTotalVendas);
+				break;
+			}
+			
+			case 0: {
+				return;
+			}
+			
+			default:
+				System.out.println("Opção Inválida");
+			}
+			
+		} while (opcaoMenuVendas != 0);
+	}
 	
 	public static void main(String[] args) throws SQLException {
 
 		Scanner teclado = new Scanner(System.in);
+				
 		int opcaoMenuPrincipal = 0;
 
 		do {
 			System.out.println(MENUPRINCIPAL);
 			opcaoMenuPrincipal = teclado.nextInt();
+			
 			switch (opcaoMenuPrincipal) {
 			
 			case 1: {
-				int opcaoMenuEstoque = 0;
-				do {
-					System.out.println(MENUGERENCIAESTOQUE);
-					opcaoMenuEstoque = teclado.nextInt();
-					switch (opcaoMenuEstoque) {
-					
-					case 1: {
-		
-						cadastraPeca(teclado);
-						break;
-					}
-					
-					case 2: {
-						
-						listaPecasBancoDados();
-						break;
-					}
-					
-					case 3: {
-												
-						buscaPecaByCodigo(teclado);
-						break;
-					}
-					
-					case 4: {
-						
-						buscaPecasByTrechoNome(teclado);
-						break;
-					}
-					
-					case 5: {
-						
-						buscaPecasCarroEspecifico(teclado);
-						break;
-					}
-					
-					case 6: {
-						
-						buscaPecasByCategoria(teclado);
-						break;
-					}
-					
-					case 7: {
-						
-						removerPecas(teclado);
-						break;
-					}
-					
-					case 0: {
-						main(args);
-						return;
-					}
-					default:
-						System.out.println("Opção Inválida");
-					}
-				}while (opcaoMenuEstoque != 0);
+				gerenciamentoEstoque(teclado);
+				break;
+			}
+			
+			case 2: {
+				
+				gerenciamentoVendas(teclado);
+				
+				break;
 			}
 			
 			case 0: {
@@ -211,7 +330,8 @@ public class Principal {
 				System.out.println("Opção Inválida");
 			}
 		} while(opcaoMenuPrincipal != 0);
+
 		
 		teclado.close();
+		}
 	}
-}

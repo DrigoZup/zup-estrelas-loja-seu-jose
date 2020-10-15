@@ -1,5 +1,7 @@
 package br.com.zup.pojo;
 
+import br.com.zup.lojaSeuJoseEnums.Categoria;
+
 public class Peca {
 
 	private int codigoBarras;
@@ -9,7 +11,7 @@ public class Peca {
 	private double precoCusto;
 	private double precoVenda;
 	private int quantidadeEstoque;
-	private String categoria;
+	private Categoria categoria;
 	
 	public Peca() {	
 	}
@@ -70,11 +72,11 @@ public class Peca {
 		this.quantidadeEstoque = quantidadeEstoque;
 	}
 
-	public String getCategoria() {
+	public Categoria getCategoria() {
 		return categoria;
 	}
 
-	public void setCategoria(String categoria) {
+	public void setCategoria(Categoria categoria) {
 		this.categoria = categoria;
 	}
 	

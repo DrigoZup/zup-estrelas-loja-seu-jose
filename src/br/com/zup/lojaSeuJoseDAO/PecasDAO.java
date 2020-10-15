@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import br.com.zup.factory.ConnectionFactory;
+import br.com.zup.lojaSeuJoseEnums.Categoria;
 import br.com.zup.pojo.Peca;
 
 public class PecasDAO {
@@ -30,7 +31,7 @@ public class PecasDAO {
 			peca.setPrecoCusto(rs.getDouble("preco_de_custo"));
 			peca.setPrecoVenda(rs.getDouble("preco_de_venda"));
 			peca.setQuantidadeEstoque(rs.getInt("quantidade_em_estoque"));
-			peca.setCategoria(rs.getString("categoria"));
+			peca.setCategoria(Categoria.valueOf(rs.getString("categoria")));
 			listaPecas.add(peca);
 		}
 	}
@@ -53,7 +54,7 @@ public class PecasDAO {
 			comando.setDouble(5, peca.getPrecoCusto());
 			comando.setDouble(6, peca.getPrecoVenda());
 			comando.setInt(7, peca.getQuantidadeEstoque());
-			comando.setString(8, peca.getCategoria());
+			comando.setString(8, peca.getCategoria().toString());
 			
 			comando.execute();
 			comando.close();
@@ -102,7 +103,7 @@ public class PecasDAO {
 				pecaEncontrada.setPrecoCusto(resultadoConsulta.getDouble("preco_de_custo"));
 				pecaEncontrada.setPrecoVenda(resultadoConsulta.getDouble("preco_de_venda"));
 				pecaEncontrada.setQuantidadeEstoque(resultadoConsulta.getInt("quantidade_em_estoque"));
-				pecaEncontrada.setCategoria(resultadoConsulta.getString("categoria"));
+				pecaEncontrada.setCategoria(Categoria.valueOf(resultadoConsulta.getString("categoria")));
 			}
 			comando.close();
 		} catch (SQLException e) {
@@ -197,4 +198,30 @@ public class PecasDAO {
 		return true;
 	}
 
+	public boolean atualizaEstoque(int qtdAtualEstoque, int codigoBarras) throws SQLException {
+		
+		String attEstoqueSQL = "update pecas set quantidade_em_estoque = ? where codigo_de_barras = ?";
+		
+		try {
+			
+			PreparedStatement comando = this.conexao.prepareStatement(attEstoqueSQL);
+			comando.setInt(1, qtdAtualEstoque);
+			comando.setInt(2, codigoBarras);
+			comando.execute();
+			
+		} catch (SQLException e) {
+			System.err.println("Erro ao dar baixa na peça");
+			System.err.println(e.getMessage());
+			return false;
+		}
+		return true;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 }
