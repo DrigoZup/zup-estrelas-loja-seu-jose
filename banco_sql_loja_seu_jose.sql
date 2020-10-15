@@ -19,5 +19,10 @@ values
 (333, 'Para-Choque', 'Fusca', 'Cupim de Aço', 175.53, 229.90, 13, 'Funilaria'),
 (444, 'Kit Turbo', 'Hillux SW4', 'Original', 2335.93, 3039.90, 18, 'Performace'),
 (555, 'Bateria', 'Ka', 'Moura', 177.94, 229.90, 70, 'Motor');
-
+ 
+use loja_de_pecas;
 select* from pecas;
+
+update pecas
+set quantidade_em_estoque = quantidade_em_estoque+30
+where codigo_de_barras = 555;

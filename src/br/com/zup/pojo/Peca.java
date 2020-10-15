@@ -81,8 +81,9 @@ public class Peca {
 	}
 	
 	public String mostraDados() {
-		return "Cod: "+codigoBarras+" - Nome: "+nome+" - Usada em: "+modeloCarro+" - Fab.: "+fabricante+" - Preço Custo: R$"+precoCusto+"\n"
-				+ "Preço Venda: R$"+precoVenda+" - Estoque: "+quantidadeEstoque+" peças - Categoria: "+categoria+"\n";
+		return String.format("Cod: %d - Nome: %s - Usada em: %s - Fab.: %s - Preço Custo: R$%.2f\n"
+				+ "Preço Venda: R$%.2f - Estoque: %d peças - Categoria: %s\n",codigoBarras, nome, modeloCarro, fabricante, precoCusto, precoVenda,
+				quantidadeEstoque, categoria);
 	}
 }
 

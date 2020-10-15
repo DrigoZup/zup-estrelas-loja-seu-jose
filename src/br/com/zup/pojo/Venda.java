@@ -49,7 +49,7 @@ public class Venda {
 	}
 	
 	public String gravaVenda() {
-		return codigoBarras+" - "+nomeProduto+" - "+qtdItensComprados+" - "+valorCompra;
+		return String.format("%d     -   %s   - %d -    %.2f", codigoBarras, nomeProduto, qtdItensComprados, valorCompra);
 	}
 
 	

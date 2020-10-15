@@ -1,5 +1,7 @@
 package br.com.zup.principalLojaSeuJose;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +41,6 @@ public class Principal {
 					+ "Escolha uma opção\n" 
 					+ "1 - Realizar uma Venda\n"
 					+ "2 - Gerar relatório de vendas diárias\n"
-					+ "3 - \n"
-					+ "4 - \n"
 					+ "0 - Voltar ao Menu Principal"
 			);
 	
@@ -126,6 +126,9 @@ public class Principal {
 		PecasDAO pecasDB = new PecasDAO();
 		List<Peca> listagem = pecasDB.listaPecasEstoque();
 		
+		System.out.println("-----------------------------------------\n"
+		 		 + "              LISTA DE PEÇAS             \n"
+				 + "-----------------------------------------\n");
 		for (Peca peca : listagem) {
 			
 			System.out.println(peca.mostraDados());
@@ -248,58 +251,13 @@ public class Principal {
 			}
 		}while (opcaoMenuEstoque != 0);
 	}
-	
-	public static void gerenciamentoVendas(Scanner teclado) throws SQLException {
 		
-		int opcaoMenuVendas = 0;
-		List<Venda> relatorioDiario = new ArrayList<>();
-		VendaDAO realizarVenda = new VendaDAO();
-		double valorTotalVendas = 0;
-		do {
-			System.out.println(MENUGERENCIAVENDAS);
-			opcaoMenuVendas = teclado.nextInt();
-			
-			
-			switch (opcaoMenuVendas) {
-			case 1: {
-				
-				System.out.println("Digite o código de barras da peça: ");
-				int codigoBarras = teclado.nextInt();
-				System.out.println("Quantas unidades o cliente vai levar?");
-				int qtdComprada = teclado.nextInt();
-				
-				Venda venda = realizarVenda.realizarVenda(codigoBarras, qtdComprada);
-				valorTotalVendas += venda.getValorCompra();
-				relatorioDiario.add(venda);
-				
-				System.out.println("Venda executada com sucesso");
-				break;
-			}
-			
-			case 2: {
-			
-				for (Venda venda : relatorioDiario ) {
-				System.out.println(venda.gravaVenda());	
-				}
-				
-				System.out.println("\n\nFATURAMENTO DO DIA: R$"+valorTotalVendas);
-				break;
-			}
-			
-			case 0: {
-				return;
-			}
-			
-			default:
-				System.out.println("Opção Inválida");
-			}
-			
-		} while (opcaoMenuVendas != 0);
-	}
 	
-	public static void main(String[] args) throws SQLException {
+	public static void main(String[] args) throws SQLException, IOException {
 
 		Scanner teclado = new Scanner(System.in);
+		List<Venda> relatorioDiario = new ArrayList<>();
+		double faturamentoDiario = 0;
 				
 		int opcaoMenuPrincipal = 0;
 
@@ -316,12 +274,85 @@ public class Principal {
 			
 			case 2: {
 				
-				gerenciamentoVendas(teclado);
+				int opcaoMenuVendas = 0;
 				
+				do {
+					System.out.println(MENUGERENCIAVENDAS);
+					opcaoMenuVendas = teclado.nextInt();
+					
+					
+					switch (opcaoMenuVendas) {
+					case 1: {
+						
+						System.out.println("Digite o código de barras da peça: ");
+						int codigoBarras = teclado.nextInt();
+						System.out.println("Quantas unidades o cliente vai levar?");
+						int qtdComprada = teclado.nextInt();
+						
+						VendaDAO realizarVenda = new VendaDAO();
+						Venda venda = realizarVenda.realizarVenda(codigoBarras, qtdComprada);
+						faturamentoDiario += venda.getValorCompra();
+						relatorioDiario.add(venda);
+						
+						System.out.println("Venda executada com sucesso");	
+						}
+						break;
+					
+					
+					case 2: {
+						
+						System.out.println("-----------------------------------------\n"
+								+ "             RELATÓRIO DE VENDAS         \n"
+								+ "-----------------------------------------\n"
+								+ "Código  -    Nome     - Qtd.  - Valor(R$)\n");
+					
+						for (Venda venda : relatorioDiario ) {
+						System.out.println(venda.gravaVenda());	
+						}
+						
+						System.out.printf("\nFATURAMENTO DO DIA: R$%.2f",faturamentoDiario);
+						
+						break;
+					}
+					
+					case 0: {
+						
+						break;
+					}
+					
+					default:
+						System.out.println("Opção Inválida");
+					}
+					
+				} while (opcaoMenuVendas != 0);
 				break;
 			}
 			
 			case 0: {
+				
+					
+				String nomeArquivo = "Relatorio-Diario.txt";
+				FileWriter arquivo = new FileWriter("relatorios-de-vendas/"+nomeArquivo, true);
+				
+//				File file = new File("/relatorios-de-vendas"); 
+//				int contaArquivos = file.listFiles().length;
+//				Aqui faltou alguma coisa pra contar os arquivos e atribuir o valor do dia, não consegui achar o problema;
+//				Retirei o import pra sumir o warning
+
+				arquivo.append(String.format("Vendas dia: \n"
+						+ "Código  -       Nome       - Quantidade -   Valor(R$)\n"));
+				
+				for (Venda venda : relatorioDiario) {
+					
+					arquivo.append(String.format(venda.gravaVenda()+"\n"));
+				}
+				arquivo.append(String.format("\nFATURAMENTO DO DIA: R$%.2f",faturamentoDiario));
+				
+				System.out.println("Suas vendas deste dia foram armazenadas em um arquivo\n");
+				
+				arquivo.close();
+				
+				
 				System.out.println("O programa foi encerrado");
 				break;
 			}
