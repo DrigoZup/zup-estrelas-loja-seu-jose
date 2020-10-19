@@ -173,7 +173,8 @@ public class Principal {
 
 	public static void buscaPecasByCategoria(Scanner teclado) throws SQLException {
 		System.out.println("Qual a categoria de peças que deseja encontrar?");
-		String categoria = teclado.next();
+		
+		String categoria = defineCategoria(teclado).toString();
 		
 		PecasDAO pecasDB = new PecasDAO();
 		List<Peca> listagem = pecasDB.buscaPecaByCategoria(categoria);
@@ -260,7 +261,7 @@ public class Principal {
 		double faturamentoDiario = 0;
 				
 		int opcaoMenuPrincipal = 0;
-
+			
 		do {
 			System.out.println(MENUPRINCIPAL);
 			opcaoMenuPrincipal = teclado.nextInt();

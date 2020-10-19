@@ -1,6 +1,0 @@
-Vendas dia: 
-Código  -       Nome       - Quantidade -   Valor(R$)
-777     -   Tapete   - 2 -    117,60
-111     -   Amortecedor   - 1 -    1239,90
-
-FATURAMENTO DO DIA: R$1357,50

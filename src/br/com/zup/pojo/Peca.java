@@ -1,15 +1,28 @@
 package br.com.zup.pojo;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
 import br.com.zup.lojaSeuJoseEnums.Categoria;
 
+@Entity
+@Table(name="pecas")
 public class Peca {
 
+	@Id
+	@Column(name="codigo_de_barras")
 	private int codigoBarras;
 	private String nome;
+	@Column(name="modelo_do_carro")
 	private String modeloCarro;
 	private String fabricante;
+	@Column(name="preco_de_custo")
 	private double precoCusto;
+	@Column(name="preco_de_venda")
 	private double precoVenda;
+	@Column(name="quantidade_em_estoque")
 	private int quantidadeEstoque;
 	private Categoria categoria;
 	
