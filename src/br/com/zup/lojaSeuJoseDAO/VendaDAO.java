@@ -16,22 +16,29 @@ public class VendaDAO {
 		
 		PecasDAO pecaDB = new PecasDAO();
 		Peca pecaVendida = pecaDB.buscaPecaByCodigo(codigoBarras);
+		
 		Venda venda = new Venda();
-		venda.setCodigoBarras(pecaVendida.getCodigoBarras());
-		venda.setNomeProduto(pecaVendida.getNome());
-		venda.setQtdItensComprados(qtdComprada);
-		venda.setValorCompra(pecaVendida.getPrecoVenda()*qtdComprada);
 		
-		try {
+		if (pecaVendida != null) {	
+			venda.setCodigoBarras(pecaVendida.getCodigoBarras());
+			venda.setNomeProduto(pecaVendida.getNome());
+			venda.setQtdItensComprados(qtdComprada);
+			venda.setValorCompra(pecaVendida.getPrecoVenda()*qtdComprada);
+			
+			try {
 				
-		int estoqueAtualizado = pecaVendida.getQuantidadeEstoque() - qtdComprada;
-		pecaVendida.setQuantidadeEstoque(estoqueAtualizado);
-		pecaDB.atualizaEstoque(estoqueAtualizado, codigoBarras);
-		
-		} catch (SQLException e) {
-			System.err.println("Falha na Venda...");
-			System.err.println(e.getMessage());
+				int estoqueAtualizado = pecaVendida.getQuantidadeEstoque() - qtdComprada;
+				pecaVendida.setQuantidadeEstoque(estoqueAtualizado);
+				pecaDB.atualizaEstoque(estoqueAtualizado, codigoBarras);
+				
+				} catch (SQLException e) {
+					System.err.println("Falha na Venda...");
+					System.err.println(e.getMessage());
+				}
+		} else {
+			System.out.println("Não temos essa peça no nosso estoque...");
 		}
+		
 		return venda;
 	}
 

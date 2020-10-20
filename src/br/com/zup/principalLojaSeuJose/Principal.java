@@ -60,7 +60,7 @@ public class Principal {
 		double precoVenda = teclado.nextDouble();
 		System.out.println("Quantas peças dessa você tem para o estoque?");
 		int estoque = teclado.nextInt();
-		Categoria categoria = defineCategoria(teclado);
+		String categoria = defineCategoria(teclado);
 		
 		
 		Peca pecaCadastrada = new Peca();
@@ -79,7 +79,7 @@ public class Principal {
 		System.out.println("A peça " + nome + " foi inserida no banco de dados!\n");
 	}
 
-	public static Categoria defineCategoria(Scanner teclado) {
+	public static String defineCategoria(Scanner teclado) {
 		
 		int escolheCategoria;		
 		
@@ -94,23 +94,23 @@ public class Principal {
 			
 			switch (escolheCategoria) {
 			case 1: {
-				return Categoria.MOTOR;
+				return Categoria.MOTOR.toString();
 			}
 			
 			case 2: {
-				return Categoria.FUNILARIA;
+				return Categoria.FUNILARIA.toString();
 			}
 			
 			case 3: {
-				return Categoria.PERFORMACE;
+				return Categoria.PERFORMACE.toString();
 			}
 			
 			case 4: {
-				return Categoria.SUSPENCAO;
+				return Categoria.SUSPENCAO.toString();
 			}
 			
 			case 5: {
-				return Categoria.ACESSORIOS;
+				return Categoria.ACESSORIOS.toString();
 			}
 			
 			default:
@@ -174,7 +174,7 @@ public class Principal {
 	public static void buscaPecasByCategoria(Scanner teclado) throws SQLException {
 		System.out.println("Qual a categoria de peças que deseja encontrar?");
 		
-		String categoria = defineCategoria(teclado).toString();
+		String categoria = defineCategoria(teclado);
 		
 		PecasDAO pecasDB = new PecasDAO();
 		List<Peca> listagem = pecasDB.buscaPecaByCategoria(categoria);

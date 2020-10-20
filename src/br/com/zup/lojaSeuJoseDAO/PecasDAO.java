@@ -4,9 +4,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
-//import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityNotFoundException;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
 
@@ -18,10 +17,7 @@ public class PecasDAO {
 
 	public PecasDAO() {
 
-		//EntityManagerFactory factory = Persistence.createEntityManagerFactory("loja_de_pecas");
-		//this.manager = factory.createEntityManager();
 		this.manager = Persistence.createEntityManagerFactory("loja_de_pecas").createEntityManager();
-		System.out.println("Conectado");
 	}
 
 	public boolean inserirPeca(Peca peca) {
@@ -31,7 +27,7 @@ public class PecasDAO {
 			manager.persist(peca);
 			manager.getTransaction().commit();
 			
-		} catch (EntityExistsException e) {
+		} catch (EntityNotFoundException e) {
 			System.err.println("Não foi possível cadastrar esse produto");
 			System.err.println(e.getMessage());
 			return false;
@@ -46,11 +42,11 @@ public class PecasDAO {
 
 		try {
 			
-			Query selecao = manager.createQuery("select p from Peca as p");
+			Query selecao = manager.createQuery("select pecas from Peca as pecas");
 		
 			listaPecas = selecao.getResultList();
 		
-		} catch (EntityExistsException e) {
+		} catch (EntityNotFoundException e) {
 			System.err.println("Não foi possível listar suas peças...");
 			System.err.println(e.getMessage());
 		}
@@ -64,7 +60,7 @@ public class PecasDAO {
 			
 			pecaEncontrada = manager.find(Peca.class, codBarras);
 			
-		} catch (EntityExistsException e) {
+		} catch (EntityNotFoundException e) {
 			System.err.println("Peça não encontrada...");
 			System.err.println(e.getMessage());
 		}
@@ -79,13 +75,13 @@ public class PecasDAO {
 		try {
 
 			Query selecao = manager.createQuery("select p from Peca as p"
-					+ "where pecas.nome like :trechoNome");
+					+ " where p.nome like :trechoNome");
 		
 			selecao.setParameter("trechoNome", trechoNome+"%");
 			listaPecas = selecao.getResultList();
 		
-		} catch (EntityExistsException e) {
-			System.err.println("Nenhuma cidade encontrada...");
+		} catch (EntityNotFoundException e) {
+			System.err.println("Nenhuma peça encontrada...");
 			System.err.println(e.getMessage());
 		}
 		return listaPecas;
@@ -97,12 +93,12 @@ public class PecasDAO {
 
 		try {
 			Query selecao = manager.createQuery("select p from Peca as p"
-					+ "where pecas.modelo_do_carro = :modeloCarro");
+					+ " where p.modeloCarro = :modeloCarro");
 		
 			selecao.setParameter("modeloCarro", nomeCarro);
 			listaPecas = selecao.getResultList();
 			
-		} catch (EntityExistsException e) {
+		} catch (EntityNotFoundException e) {
 			System.err.println("Não encontramos nenhuma peça para esse carro");
 			System.err.println(e.getMessage());
 		}
@@ -116,12 +112,12 @@ public class PecasDAO {
 		try {
 			
 			Query selecao = manager.createQuery("select p from Peca as p"
-					+ "where pecas.categoria = :categoria");
+					+ " where p.categoria = :categoria");
 		
 			selecao.setParameter("categoria", categoria);
 			listaPecas = selecao.getResultList();
 		
-		} catch (EntityExistsException e) {
+		} catch (EntityNotFoundException e) {
 			System.err.println("Não encontramos nenhuma peça para esse carro");
 			System.err.println(e.getMessage());
 		}
@@ -139,7 +135,7 @@ public class PecasDAO {
 			manager.remove(pecaRemovida);
 			manager.getTransaction().commit();
 			
-		} catch (EntityExistsException e) {
+		} catch (EntityNotFoundException e) {
 			System.err.println("Impossível deletar este item");
 			System.err.println(e.getMessage());
 			return false;
@@ -161,7 +157,7 @@ public class PecasDAO {
 			manager.merge(pecaEstoqueAtualizado);
 			manager.getTransaction().commit();
 
-		} catch (EntityExistsException e) {
+		} catch (EntityNotFoundException e) {
 			System.err.println("Erro ao dar baixa na peça");
 			System.err.println(e.getMessage());
 			return false;

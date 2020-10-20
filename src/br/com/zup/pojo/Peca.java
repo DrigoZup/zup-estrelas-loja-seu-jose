@@ -5,7 +5,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import br.com.zup.lojaSeuJoseEnums.Categoria;
 
 @Entity
 @Table(name="pecas")
@@ -24,7 +23,7 @@ public class Peca {
 	private double precoVenda;
 	@Column(name="quantidade_em_estoque")
 	private int quantidadeEstoque;
-	private Categoria categoria;
+	private String categoria;
 	
 	public Peca() {	
 	}
@@ -85,11 +84,11 @@ public class Peca {
 		this.quantidadeEstoque = quantidadeEstoque;
 	}
 
-	public Categoria getCategoria() {
+	public String getCategoria() {
 		return categoria;
 	}
 
-	public void setCategoria(Categoria categoria) {
+	public void setCategoria(String categoria) {
 		this.categoria = categoria;
 	}
 	
