@@ -1,0 +1,5 @@
+Vendas dia: 
+Código  -       Nome       - Quantidade -   Valor(R$)
+333     -   Para-Choque   - 3 -    689,70
+
+FATURAMENTO DO DIA: R$689,70
